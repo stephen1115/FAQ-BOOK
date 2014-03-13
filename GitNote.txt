@@ -1,0 +1,13 @@
+Git/GitHub 使用筆記
+[GitHub 設定]
+
+[Git 初始化]
+
+[從GitHub Clone 一份branch]
+  移動到本機想要存放此branch的repository目錄底下
+  +---------------------------------------------------------+
+  | $ git clone https://github.com/stephen1115/Testing.git  |
+  +---------------------------------------------------------+
+  repository 目錄底下會出現新的目錄Testing
+
+
