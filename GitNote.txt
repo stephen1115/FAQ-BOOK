@@ -1,4 +1,15 @@
 Git/GitHub 使用筆記
+
+Git 有以下四種方法來存取遠端的Git伺服器：
+SSH 安全性最佳
+    git clone git@github.com:ihower/sandbox.git
+HTTP/HTTPS 速度最差，但能突破防火牆限制
+    git clone https://ihower@github.com/ihower/sandbox.git
+Git protocol 速度最快，但缺認證機制(因此只能做成唯讀)
+    git clone git://github.com/ihower/sandbox.git
+File 本機目錄 (有人用 Dropbox 分享 git init –bare –shared 目錄!! Crazy!!)
+    git clone file://path/to/repo.git
+
 [GitHub 設定]
 
 [Git 初始化]
