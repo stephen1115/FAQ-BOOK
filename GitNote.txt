@@ -21,4 +21,6 @@ File 本機目錄 (有人用 Dropbox 分享 git init –bare –shared 目錄!! 
   +---------------------------------------------------------+
   repository 目錄底下會出現新的目錄Testing
 
-New Branch, working
+New Branch,AAAAAAAAA workingi
+
+Testing
