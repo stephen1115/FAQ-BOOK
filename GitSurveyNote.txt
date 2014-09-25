@@ -1,0 +1,398 @@
+本機的版本控制
+  Repository，版本庫，簡單的來說，它就是本機HDD上的一個目錄，而這個目錄中的所有文
+  件都可以被Git管理。也就是說版本庫中的每一個文件的異動，Git均能追縱。無論任何時
+  刻都能追縱文件的歴史版本，任何時刻都可以將文件“還原”。
+
+  Practice
+  建立一個版本庫
+  1. 建立一個新的目錄
+     user@Localhost home$ mkdir gitRepo
+     user@Localhost home$ cd gitRepo
+
+  2. 透過命令，git init，可以將此目錄初始化成Git可以管理的版本庫
+    user@Localhost home$ git init
+    Initialized empty Git repository in /Users/home/gitRepo/.git/
+
+  至此，已經一個空的Git版本庫建立完成；此時觀察gitRepo目錄底下會發現多了一個 
+  .git的目錄，這個目錄是Git用來記錄當前版本庫異動的meta data的地方，
+  若不熟悉此目錄，建議不要自行修改此目錄底下的資料。
+
+  Practice
+  如何將文件加入版本庫
+  1. 為以後測試方便，先編寫一個readme.txt的文件，內容如下：
+     Git is a revsion control system。
+     Git is a free software。
+  2. 透過命令，git add [File name]，可以將文件加入到版本庫中。
+     user@Localhost home$ git add readme.txt
+  3. 透過命令，git commit -m <comment> [File name]，確認文件要提交到Git
+     user@Localhost home$ git commit -m "wrote a readme file"
+     [master (root-commit) ecc2398] wrote a readme file
+     Committer: Stephen Chen <stephen@StephentekiMacBook-Pro.local>
+     Your name and email address were configured automatically based
+     on your username and hostname. Please check that they are accurate。
+     You can suppress this message by setting them explicitly:
+
+         git config --global user.name "Your Name"
+         git config --global user.email you@example.com
+
+     After doing this，you may fix the identity used for this commit with:
+
+        git commit --amend --reset-author
+
+     1 file changed，2 insertions(+)
+     create mode 100644 readme.txt
+     
+     -m : 此參數是本次提交的說明或註解，可以輸入任何內容
+
+  Note
+    1. 為什麼要把文件加入到Git版本庫中會需要2個命令，
+       分別是 add，commit，才能完成呢？原因是 "commit" 命令可以一次提交多個文件到
+       版本庫中，所以可以多次的 "add" 不同的文件，然後一次提交。
+       例如：
+           $ git add file_1.txt
+           $ git add file_2.txt
+           $ git add file_3.txt
+           $ git commit -m "add 3 files"
+
+    2. 所有的版本控制系統均只能追縱純文字檔，例如：txt file，HTML file，或是 
+       source code file，Git也不例外，系統能追縱每一次的異動，但，一旦遇上圖片或
+       2進位檔案，雖然系統也能管理，但卻無法追縱文件的變化，只能告訴使用者檔案有
+       異動，例如：從100 KB變成120 KB，但到底改了什麼，系統就不知道，也無法知道；
+       但，若是純文字檔，系統就能告訴使用者文件的變化，例如：第5行加了哪幾個字元
+       ，或是第8行刪了哪幾個字元。
+
+   Practice
+   文件異動後的追踪
+   1. 修改readme.txt文件
+      Git is a distribute version control system。
+      Gi t is a free software。
+   2. 執行git status，查看執行後的結果
+      user@Localhost home$ git status
+      # On branch working
+      # Changes not staged for commit:
+      #   (use "git add <file>..." to update what will be committed)
+      #   (use "git checkout -- <file>..." to discard changes in working directory)
+      #
+      #   modified:   readme.txt
+      # 
+      # Untracked files:
+      #   (use "git add <file>..." to include in what will be committed)
+      #
+      #   .GitSurveyNote.txt.swp
+      no changes added to commit (use "git add" and/or "git commit -a")
+
+      git status 可以讓使用者隨時掌握版本庫的狀態，所以由剛剛的執行結果，可以發現
+      readme.txt已經被修改過了，但是沒有提交修改。
+   3. 執行git diff可以比較出檔案異動了哪些內容
+      user@Localhost home$ git diff readme.txt
+      diff --git a/readme.txt b/readme.txt
+      index f90579c..678c81f 100644
+      --- a/readme.txt
+      +++ b/readme.txt
+      @@ -1，2 +1，2 @@
+      -Git is a revsion control system。
+      +Git is a distributed revsion control system。
+       Git is a free software。
+   4. 確認了異動的內容後，就可以提交修改到版本庫了
+      user@Localhost home$ git add readme.txt
+      再執行一次 git status
+      user@Localhost home$ git status
+      # On branch working
+      # Changes to be committed:
+      #   (use "git reset HEAD <file>..." to unstage)
+      #
+      #   modified:   readme.txt
+      #
+      # Changes not staged for commit:
+      #   (use "git add <file>..." to update what will be committed)
+      #   (use "git checkout -- <file>..." to discard changes in working directory)
+      #
+      #   modified:   GitSurveyNote.txt
+      #
+      # Untracked files:
+      #   (use "git add <file>..." to include in what will be committed)
+      #
+      #   .GitSurveyNote.txt.swp
+      git status 顯示了將要提交的修改，包括readme.txt，再來就可以提交了。
+   5. git commit -m "add distributed"
+      其實也可以再執行一次git status來確認目前已經沒有需要提交的修改，
+      工作目錄是clean的。
+      user@Localhost home$ git status
+      # On branch working
+      nothing to commit，working directory clean
+
+  Practice
+  文件版本退回
+  追踪版本歴史記錄
+  1. 對文件readme.txt再次進行修改
+     Git is a distributed version control system。
+     Git is a free software ditributed under the GPL。
+  2. 截至目前為止，總共提交了三個版本到Git版本庫中。
+     版本1: wrote a readme file
+         Git is a version control system。
+         Git is a free software。
+     版本2: add distributed 
+         Git is a distributed version control system。
+         Git is a free software。
+     版本3: append GPL
+         Git is a distributed version control system。
+         Git is a free software ditributed under the GPL。
+     若想要查看修改的歴史記錄，可以使用git log這個命令，
+     git log 命令會顯示最近到最遠的提交註釋。
+     ＋﹣﹣﹣﹣﹣﹣﹣﹣﹣﹣﹣﹣﹣﹣﹣﹣﹣﹣﹣﹣﹣﹣﹣﹣﹣﹣﹣﹣﹣﹣﹣﹣﹣﹣﹣﹣＋
+     ｜ user@Localhost home$ git log
+     |   commit 2bc7001d5633c2a797b0acad66317ec655128fb0
+     |   Author: Stephen Chen <mingyi.chen@gmail.com>
+     |   Date:   Thu Sep 4 23:40:38 2014 +0800
+     |
+     |       append GPL
+     |
+     |   commit 8132a4d31f787656cad1f50d50bd3ef292543e49
+     |   Author: Stephen Chen <mingyi.chen@gmail.com>
+     |   Date:   Thu Sep 4 00:26:41 2014 +0800
+     |
+     |       updated，2014/9/4
+     ＋﹣﹣﹣﹣﹣﹣﹣﹣﹣﹣﹣﹣﹣﹣﹣﹣﹣﹣﹣﹣﹣﹣﹣﹣﹣﹣﹣﹣﹣﹣﹣﹣﹣﹣﹣﹣＋
+     若加上 --pertty=oneline 就只會看到一行訊息
+     ＋﹣﹣﹣﹣﹣﹣﹣﹣﹣﹣﹣﹣﹣﹣﹣﹣﹣﹣﹣﹣﹣﹣﹣﹣﹣﹣﹣﹣﹣﹣﹣﹣﹣﹣﹣﹣＋
+     ｜user@Localhost home$ git log --pertty=oneline
+     ｜2bc7001d5633c2a797b0acad66317ec655128fb0 append GPL
+     ｜8132a4d31f787656cad1f50d50bd3ef292543e49 updated，2014/9/4
+     ＋﹣﹣﹣﹣﹣﹣﹣﹣﹣﹣﹣﹣﹣﹣﹣﹣﹣﹣﹣﹣﹣﹣﹣﹣﹣﹣﹣﹣﹣﹣﹣﹣﹣﹣﹣﹣＋
+     最前面的一串數字是commit ID，這是一串16進位表示的字串，使用SHA1算出來的字串
+     ，而為什麼要使用這麼大一串字串當ID呢？原因在於Git是一個分散式系統，若遇上多
+     人協作的專案時，多人同時在同一個版本庫中工作，就要避免有相同的ID產生，而造成
+     衝突。
+
+    Practice
+    版本退回
+    在Git中，用HEAD表示目前最近版，也就是最近的提交
+    所以，
+    上一個版本表示成 HEAD^
+    上二個版本表示成 HEAD^^
+    上100個版本表示成 HEAD～100
+
+    若要將當前append GPL退回到上一個版本 add distributed，可以使用命令 git reset
+    user@Localhost home$ git reset --hard HEAD^
+    HEAD is now at 8132a4d updated，2014/9/4
+    可以用cat readme.txt 查看內容是否退回前一版本。
+    再用git log 查看目前版本庫中的狀態
+    user@Localhost home$ git log
+    commit fc9261a069d90e37bb277f138e62a02a1f5657b2
+    Author: Stephen Chen <mingyi.chen@gmail.com>
+    Date:   Thu Sep 4 00:22:06 2014 +0800
+    
+        add distributed
+    
+    commit 2730b6d2b6bc17556639a48b8afa279d830122eb
+    Author: Stephen Chen <mingyi.chen@gmail.com>
+    Date:   Wed Sep 3 23:57:09 2014 +0800
+    
+        Wrote a readme file。
+        
+    所以最近的append GPL的版本已經消失了！
+    若想要再回復剛剛append GPL的這個版本要如何處理？
+    答案是，只要找到append GPL這個版本的commit ID即可，Git提供了一個命令，
+    git reflog，用來記錄使用者的每一次命令。
+    user@Localhose home$ git reflog
+    8132a4d HEAD@{0}: reset: moving to HEAD^
+    2bc7001 HEAD@{1}: commit: append GPL
+    8132a4d HEAD@{2}: commit: updated，2014/9/4
+    f0c7403 HEAD@{3}: commit: updated，2014/9/4
+    fc9261a HEAD@{4}: commit: add distributed
+    2730b6d HEAD@{5}: commit: Wrote a readme file。
+    8eb39d6 HEAD@{6}: commit: Update git commit -a <comment> [File name]
+    685cd9e HEAD@{7}: commit: v 0.1
+    bc4fcf5 HEAD@{8}: checkout: moving from master to working
+    bc4fcf5 HEAD@{9}: merge working: Fast-forward
+    22683c5 HEAD@{10}: checkout: moving from working to master
+    最前面的數字就是commit ID，所以找到commit ID為2bc7001
+    執行
+    user@Localhost home$ git reset --hard 2bc7001
+    HEAD is now at 2bc7001 append GPL
+    PS. commit ID不需要全部輸入，只需要輸入前面幾碼即可。
+    在Git內部是用指針指向當前版本，所以版本退回的速度很快，例如範例，
+    僅是把指針HEAD指向append GPL。
+   
+      ┌────┐
+      │HEAD│
+      └────┘
+        ｜    
+        ＋﹣﹣＞ █ append GPL
+                 │
+                 █ add distributed
+                 │
+                 █ wrote a readme file
+    
+    退回上一個版本
+
+      ┌────┐
+      │HEAD│
+      └────┘ 
+        ｜    
+        ｜       █ append GPL
+        ｜       │
+        ＋﹣﹣＞ █ add distributed
+                 │
+                 █ wrote a readme file
+
+   工作區和暫存區
+   工作區，WORKING DIRECTORY，指的是機器上能看到的目錄，例如：
+   版本庫，Repository，在工作區中有一個隱藏目錄，.git，就是Git的版本庫．
+   版本庫中存放了不少資料，但其中有幾項需要了解:
+   A. Stage暫存區
+   B. Git創建的第一個分支，master
+   C. 以及指向master的一個指針，HEAD
+
+  ┌───工作區──  ┐         +-----版本庫   -----------------------------------+ 
+  |             |         |                                                 |
+  | LearnGit    |         |                              +----+             |
+  |   +         |         |                              |HEAD+--+          |
+  |   |         |         |                              +----+  |          |
+  |   |         |         |                                      v          |
+  |   |         |  add    |  +----Stage---+             +------Master----+  |
+  |   |         |         |  |            |             |                |  |
+  |   +--> git  +----------> |            |             |                |  |
+  |   |         |         |  |            |   COMMIT    |                |  |
+  |   |         |         |  |            +-----------> |                |  |
+  |   +-->      |         |  |            |             |                |  |
+  |             |         |  |            |             |                |  |
+  |             |         |  |            |             |                |  |
+  |             |         |  |            |             |                |  |
+  |             |         |  +------------+             +----------------+  |
+  |             |         |                                                 |
+  |             |         |                                                 |
+  +-------------+         +-------------------------------------------------+
+  此圖呼應之前提及的，要將文件提交到Git的版本庫中需要2個步驟:
+  step 1. 用git add，實際上也就是將文件放到暫存區中
+  step 2. 用git commit，也就是將暫存區中所有的"修改"都提交到當前的分支。
+
+  總結來說，需要提交的所有文件異動都會存放在暫存區中，然後，
+  可以一次性的提交暫存區中的所有修改
+
+  Practice
+  1. 先對readme.txt進行修改
+     .....
+     .....
+     Git has a mutable index called stage.
+  2. 在工作區中再新增一個License.txt文件
+  3. 執行 git status
+     user@Localhost home$ git status
+     # On branch working
+     # Changes not staged for commit:
+     #   (use "git add <file>..." to update what will be committed)
+     #   (use "git checkout -- <file>..." to discard changes in working directory)
+     #
+     #	modified:   readme.txt
+     #
+     # Untracked files:
+     #   (use "git add <file>..." to include in what will be committed)
+     #
+     #	.GitSurveyNote.txt.swp
+     #	Git
+     #	License.txt
+     no changes added to commit (use "git add" and/or "git commit -a")
+
+     Git顯示readme.txt被修改了，而 License.txt尚未被添加過，
+     所以狀態仍為"Untracked"
+  4. 使用兩次git add 將2個檔案都添加到暫存區
+  5. 執行 git status
+     user@Localhost home$ git status
+     # On branch working
+     # Changes to be committed:
+     #   (use "git reset HEAD <file>..." to unstage)
+     #
+     #	new file:   License.txt
+     #	modified:   readme.txt
+     
+     即暫存區的狀態如下圖:
+  ┌───工作區──  ┐         +-----版本庫   -----------------------------------+
+  |             |         |                                                 |
+  |             |         |                              +----+             |
+  |             |         |                              |HEAD+--+          |
+  |             |         |                              +----+  |          |
+  |             |         |                                      v          |
+  |             |         |  +----Stage---+             +------Master----+  |
+  |  readme.txt | git add |  |            |             |                |  |
+  |  License    +----------> | readme.txt |             |                |  |
+  |             |         |  | License    |             |                |  |
+  |             |         |  |            |             |                |  |
+  |             |         |  |            |             |                |  |
+  |             |         |  |            |             |                |  |
+  |             |         |  |            |             |                |  |
+  |             |         |  |            |             |                |  |
+  |             |         |  +------------+             +----------------+  |
+  |             |         |                                                 |
+  |             |         |                                                 |
+  +-------------+         +-------------------------------------------------+
+  6. 執行git commit -m "understand how stage works"
+     將暫存區的所有提交修改都提交到當前的分支
+  7. 再執行一次git status 就會發現工作區是乾淨的。
+
+  ┌───工作區──  ┐         +-----版本庫   -----------------------------------+
+  |             |         |                                                 |
+  |             |         |                              +----+             |
+  |             |         |                              |HEAD+--+          |
+  |             |         |                              +----+  |          |
+  |             |         |                                      v          |
+  |             |         |  +----Stage---+             +------Master----+  |
+  |             |         |  |            |             |                |  |
+  |             |         |  |            |             |                |  |
+  |             |         |  |            | git commit  | readme.txt     |  |
+  |             |         |  |            +-----------> | License        |  |
+  |             |         |  |            |             |                |  |
+  |             |         |  |            |             |                |  |
+  |             |         |  |            |             |                |  |
+  |             |         |  |            |             |                |  |
+  |             |         |  +------------+             +----------------+  |
+  |             |         |                                                 |
+  |             |         |                                                 |
+  +-------------+         +-------------------------------------------------+
+
+  Git管理的是“修改”
+  何謂修改？指的是對於文件的任何異動都算是修改，例如：新增一行，刪除一行，
+  更改了N個字元⋯⋯ 等都算是修改。
+  Git如何管理“修改”？可以進行以下測試
+  Practice
+  1. 針對readme.txt進行一次修改，內容如下：
+     ⋯⋯⋯⋯
+     Git tracks changes
+  2. git add readme.txt
+  3. 再修改readme.txt
+     ......
+     Git tracks changes of files
+  4. git commit -m "git tracks changes"
+  5. git status
+     user@Localhost home$ git status
+     # On branch working
+     # Changes not staged for commit:
+     #   (use "git add <file>..." to update what will be committed)
+     #   (use "git checkout -- <file>..." to discard changes in working directory)
+     #
+     #	modified:   readme.txt
+     no changes added to commit (use "git add" and/or "git commit -a")
+     會發現第二次修改(step 3)的內容沒有被提交，回顧剛才的操作
+     第一次修改 ﹣﹣＞ git add ﹣﹣＞ 第二次修改 ﹣﹣＞ git commit
+     由此可以了解當使用了git add，就會把工作區的第一次修改放入暫存區，
+     但第二次的修改並未被從工作區放入暫存區；所以只有第一次的修改被提交了
+     而第二次沒有。
+  6. 可以使用git diff HEAD -- readme.txt來查看工作區和版本庫中最新版的區別。
+     user@Localhost home$ git diff HEAD -- readme.txt
+     diff --git a/readme.txt b/readme.txt
+     index a868f11..133f8da 100644
+     --- a/readme.txt
+     +++ b/readme.txt
+     @@ -2,3 +2,4 @@ Git is a distributed revsion control system.
+      Git is a free software distributed under the GPL.
+      Git has a mutable index called stage.
+      Git tracks changes
+     +Git tracks changes of files
+  7. 如何提交第二次修改呢？
+     可以再使用一次git add 然後再執行git commit
+     或者是
+     先add第一次修改，再add第二次修改，再下commit一併提交
+     第一次修改 ﹣﹣＞ git add ﹣﹣＞ 第二次修改 ﹣﹣＞ git add ﹣﹣＞ git commit
+
+
+
+
