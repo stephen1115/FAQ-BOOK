@@ -1,4 +1,3 @@
-TEST
 本機的版本控制
   Repository，版本庫，簡單的來說，它就是本機HDD上的一個目錄，而這個目錄中的所有文
   件都可以被Git管理。也就是說版本庫中的每一個文件的異動，Git均能追縱。無論任何時
@@ -34,7 +33,7 @@ TEST
      on your username and hostname. Please check that they are accurate。
      You can suppress this message by setting them explicitly:
 
-         git config --global user.name "Your Name" 
+         git config --global user.name "Your Name"
          git config --global user.email you@example.com
 
      After doing this，you may fix the identity used for this commit with:
@@ -246,7 +245,7 @@ TEST
    B. Git創建的第一個分支，master
    C. 以及指向master的一個指針，HEAD
 
-  ┌───工作區─── ┐         +-----版本庫   -----------------------------------+ 
+  ┌───工作區──  ┐         +-----版本庫   -----------------------------------+ 
   |             |         |                                                 |
   | LearnGit    |         |                              +----+             |
   |   +         |         |                              |HEAD+--+          |
